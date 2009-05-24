@@ -33,17 +33,17 @@ public class ClassUtilsTest extends TestCase {
     public void testReadClass() throws Exception {
         List<File> dirs = Arrays.asList(new File("src/main/java"));
         assertTrue(dirs.get(0).exists());
-        String code = ClassUtil.readClass(dirs, "timjan", "ClassUtils");
+        String code = ClassUtil.readClass(dirs, "timjan.util", "ClassUtil");
         assertNotNull(code);
-        assertTrue(code.startsWith("package timjan;"));
+        assertTrue(code.startsWith("package timjan.util;"));
     }
 
     public void testReadClassWithMultipleDirectories() throws Exception {
         List<File> dirs = Arrays.asList(new File("src/test/java"), new File("/apa"), new File("src/main/java"));
         assertTrue(dirs.get(2).exists());
-        String code = ClassUtil.readClass(dirs, "timjan", "ClassUtils");
+        String code = ClassUtil.readClass(dirs, "timjan.util", "ClassUtil");
         assertNotNull(code);
-        assertTrue(code.startsWith("package timjan;"));
+        assertTrue(code.startsWith("package timjan.util;"));
     }
 
     public void testReadClassNoClassFound() throws Exception {

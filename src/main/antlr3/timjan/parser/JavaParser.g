@@ -13,6 +13,7 @@ tokens {
     import java.io.*;
     import java.util.List;
     import timjan.*;
+    import timjan.util.*;
 }
 
 @members {
@@ -31,7 +32,7 @@ tokens {
     }
 
     public static ClassFile parseClass(List<File> classDirs, String packageName, String className) throws IOException, RecognitionException {
-        return parse(ClassUtils.readClass(classDirs, packageName, className));
+        return parse(ClassUtil.readClass(classDirs, packageName, className));
     }
 
 }
@@ -39,12 +40,12 @@ tokens {
 class_file returns [ClassFile cf]
     : ps=package_statement
         imst=import_statements
-        class_definition 
-        { cf = new ClassFile(ps, imst, null); }
+        cd=class_definition 
+        { cf = new ClassFile(ps, imst, cd); }
     ;
 
 package_statement returns [PackageStatement ps]
-    : PACKAGE pp+=PACKAGE_PART (PERIOD pp+=PACKAGE_PART)+ SEMI
+    : PACKAGE pp+=WORD (PERIOD pp+=WORD)+ SEMI
         { ps = new PackageStatement($pp); }
     ;
 
@@ -54,11 +55,11 @@ import_statements returns [List<ImportStatement> iss = new ArrayList<ImportState
     ;
 
 import_statement returns [ImportStatement imst]
-    : IMPORT PACKAGE_PART (PERIOD PACKAGE_PART)+ PERIOD (cn=CLASS_NAME | ASTERISK) SEMI
-        { imst = new ImportStatement(null, $cn.text); }
+    : IMPORT pp+=WORD (PERIOD pp+=WORD)+ PERIOD q=(WORD | ASTERISK) SEMI
+        { imst = new ImportStatement($pp, $q.text); }
     ;
 
 class_definition returns [ClassDefinition cd]
-    : VISIBILITY? STATIC? CLASS CLASS_NAME
-        { cd = new ClassDefinition(); }
+    : vis=VISIBILITY cl=CLASS name=WORD
+        { cd = new ClassDefinition($vis.text, false, $name.text); }
     ;

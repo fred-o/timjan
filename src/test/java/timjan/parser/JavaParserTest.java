@@ -7,6 +7,7 @@ package timjan.parser;
 import java.io.File;
 import java.util.Arrays;
 import junit.framework.TestCase;
+import timjan.ClassDefinition;
 import timjan.ClassFile;
 
 /**
@@ -21,5 +22,12 @@ public class JavaParserTest extends TestCase {
         assertNotNull(cf);
         assertEquals("test.classes", cf.getPackageStatement().getPackageName());
         assertEquals(1, cf.getImports().size());
+        assertEquals("java.util", cf.getImports().get(0).getPackageName());
+        assertEquals("*", cf.getImports().get(0).getQualifier());
+        ClassDefinition cdef = cf.getClassDefininition();
+        assertNotNull(cdef);
+        assertEquals("public", cdef.getVisibility());
+        assertFalse(cdef.isStatic());
+        assertEquals("SimpleClass1", cdef.getClassName());
     }
 }

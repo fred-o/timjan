@@ -9,14 +9,14 @@ import java.util.List;
  * @author fredrik
  */
 public class ClassFile {
-    final private PackageStatement packageName;
+    final private PackageStatement packageStatement;
     final private List<ImportStatement> imports;
-    final private String className;
+    final private ClassDefinition classDefininition;
 
-    public ClassFile(PackageStatement packageName, List<ImportStatement> imports, String className) {
-        this.packageName = packageName;
+    public ClassFile(PackageStatement packageName, List<ImportStatement> imports, ClassDefinition classDefinition) {
+        this.packageStatement = packageName;
         this.imports = imports != null ? Collections.unmodifiableList(imports) : Collections.<ImportStatement>emptyList();
-        this.className = className;
+        this.classDefininition = classDefinition;
     }
 
     public List<ImportStatement> getImports() {
@@ -24,11 +24,10 @@ public class ClassFile {
     }
 
     public PackageStatement getPackageStatement() {
-        return packageName;
+        return packageStatement;
     }
 
-    public String getClassName() {
-        return className;
+    public ClassDefinition getClassDefininition() {
+        return classDefininition;
     }
-
 }

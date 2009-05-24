@@ -23,7 +23,6 @@ PACKAGE: 'package ';
 VISIBILITY: ('public'|'protected'|'private');
 STATIC: 'static';
 
-PACKAGE_PART: ('a'..'z'|'A'..'Z')+;
-CLASS_NAME: ('a'..'z'|'A'..'Z')+;
+WORD: ('a'..'z'|'A'..'Z'|'0'..'9')+;
 
 WS : (' ' | '\r' | '\n') { $channel = HIDDEN; };
