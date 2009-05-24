@@ -7,6 +7,9 @@ options {
 
 @header {
     package timjan.parser;
+    import java.io.*;
+    import java.util.List;
+    import timjan.*;
 }
 
 @members {
@@ -24,9 +27,10 @@ options {
         return new CommonTokenStream(lexer);
     }
 
-    public static Tree parseFile(String str) throws RecognitionException {
-        return (Tree)new JavaParser(tokenize(str)).class_file().getTree();
+    public Tree parseClass(List<File> classDirs, String packageName, String className) throws IOException, RecognitionException {
+        return parse(ClassUtils.readClass(classDirs, packageName, className));
     }
+
 }
 
 class_file
