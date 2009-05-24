@@ -5,6 +5,10 @@ options {
     tokenVocab = JavaLexer;
 }
 
+tokens {
+    CLASS_FILE;
+}
+
 @header {
     package timjan.parser;
     import java.io.*;
@@ -27,16 +31,32 @@ options {
         return new CommonTokenStream(lexer);
     }
 
-    public Tree parseClass(List<File> classDirs, String packageName, String className) throws IOException, RecognitionException {
+    public static Tree parseClass(List<File> classDirs, String packageName, String className) throws IOException, RecognitionException {
         return parse(ClassUtils.readClass(classDirs, packageName, className));
     }
 
 }
 
 class_file
-    : import_statement
+    : package_statement
+        import_statements
+        class_definition
+        -> ^(CLASS_FILE package_statement import_statements?)
+    ;
+
+package_statement
+    : PACKAGE PACKAGE_PART (PERIOD PACKAGE_PART)+ SEMI
+        -> ^(PACKAGE PACKAGE_PART+)
+    ;
+
+import_statements
+    : import_statement*
     ;
 
 import_statement
-    : IMPORT SEMI
+    : IMPORT PACKAGE_PART (PERIOD PACKAGE_PART)+ PERIOD (CLASS_NAME | ASTERISK) SEMI
+    ;
+
+class_definition
+    : VISIBILITY? STATIC? CLASS CLASS_NAME
     ;
