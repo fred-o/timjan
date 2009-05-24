@@ -1,7 +1,6 @@
 parser grammar JavaParser;
 
 options {
-    output = AST;
     tokenVocab = JavaLexer;
 }
 
@@ -17,13 +16,13 @@ tokens {
 }
 
 @members {
-    public static Tree parse(String str) throws RecognitionException {
+    public static ClassFile parse(String str) throws RecognitionException {
         return parse(tokenize(str));
     }
 
-    public static Tree parse(CommonTokenStream stream) throws RecognitionException {
+    public static ClassFile parse(CommonTokenStream stream) throws RecognitionException {
         JavaParser parser = new JavaParser(stream);
-        return (Tree)parser.class_file().getTree();
+        return parser.class_file();
     }
 
     public static CommonTokenStream tokenize(String str) throws RecognitionException {
@@ -31,30 +30,32 @@ tokens {
         return new CommonTokenStream(lexer);
     }
 
-    public static Tree parseClass(List<File> classDirs, String packageName, String className) throws IOException, RecognitionException {
+    public static ClassFile parseClass(List<File> classDirs, String packageName, String className) throws IOException, RecognitionException {
         return parse(ClassUtils.readClass(classDirs, packageName, className));
     }
 
 }
 
-class_file
-    : package_statement
-        import_statements
-        class_definition
-        -> ^(CLASS_FILE package_statement import_statements?)
+class_file returns [ClassFile cf]
+    : ps=package_statement
+        imst=import_statements
+        class_definition 
+        { cf = new ClassFile(ps, imst, null); }
     ;
 
-package_statement
-    : PACKAGE PACKAGE_PART (PERIOD PACKAGE_PART)+ SEMI
-        -> ^(PACKAGE PACKAGE_PART+)
+package_statement returns [PackageStatement ps]
+    : PACKAGE pp+=PACKAGE_PART (PERIOD pp+=PACKAGE_PART)+ SEMI
+        { ps = new PackageStatement($pp); }
     ;
 
-import_statements
-    : import_statement*
+import_statements returns [List<ImportStatement> iss = new ArrayList<ImportStatement>()]
+    : (is=import_statement)+ 
+        { iss.add(is); }
     ;
 
-import_statement
-    : IMPORT PACKAGE_PART (PERIOD PACKAGE_PART)+ PERIOD (CLASS_NAME | ASTERISK) SEMI
+import_statement returns [ImportStatement imst]
+    : IMPORT PACKAGE_PART (PERIOD PACKAGE_PART)+ PERIOD (cn=CLASS_NAME | ASTERISK) SEMI
+        { imst = new ImportStatement(null, $cn.text); }
     ;
 
 class_definition
