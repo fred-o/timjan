@@ -1,4 +1,4 @@
-package timjan;
+package timjan.util;
 
 import org.antlr.runtime.Token;
 

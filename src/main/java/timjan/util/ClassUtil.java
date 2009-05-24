@@ -1,4 +1,4 @@
-package timjan;
+package timjan.util;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,9 +11,9 @@ import java.util.List;
 /**
  * @author fredrik
  */
-public class ClassUtils {
+public class ClassUtil {
 
-    private ClassUtils() {
+    private ClassUtil() {
     }
 
     public static File packageToFile(File baseDir, String packageName) {

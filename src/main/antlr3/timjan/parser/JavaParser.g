@@ -58,6 +58,7 @@ import_statement returns [ImportStatement imst]
         { imst = new ImportStatement(null, $cn.text); }
     ;
 
-class_definition
+class_definition returns [ClassDefinition cd]
     : VISIBILITY? STATIC? CLASS CLASS_NAME
+        { cd = new ClassDefinition(); }
     ;
