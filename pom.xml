@@ -30,7 +30,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<libDirectory>target/generated-sources/antlr/vuk</libDirectory> 
+					<libDirectory>target/generated-sources/antlr/timjan</libDirectory> 
 				</configuration>
 			</plugin>
 		</plugins>
