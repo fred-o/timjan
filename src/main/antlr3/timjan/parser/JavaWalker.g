@@ -54,9 +54,16 @@ options {
 
 // Starting point for parsing a Java file.
 javaSource returns [ClassFile cf]
-@init { List<ImportStatement> ids = new ArrayList<ImportStatement>(); }
-    :   ^(JAVA_SOURCE annotationList pd=packageDeclaration? (id=importDeclaration { ids.add(id); })* typeDeclaration*)
-        { $cf = new ClassFile(pd, ids, null); }
+@init { 
+    List<ImportStatement> ids = new ArrayList<ImportStatement>(); 
+    List<ClassDefinition> cds = new ArrayList<ClassDefinition>();
+}
+    :   ^(JAVA_SOURCE annotationList 
+            pd=packageDeclaration? 
+            (id=importDeclaration { ids.add(id); })* 
+            (cd=typeDeclaration { cds.add(cd); })*
+            )
+        { $cf = new ClassFile(pd, ids, cds); }
     ;
 
 packageDeclaration returns [PackageStatement ps]
@@ -69,8 +76,9 @@ importDeclaration returns [ImportStatement is]
         { $is = new ImportStatement(qi, st != null, ds != null); }
     ;
     
-typeDeclaration
-    :   ^(CLASS modifierList IDENT genericTypeParameterList? extendsClause? implementsClause? classTopLevelScope)
+typeDeclaration returns [ClassDefinition cd]
+    :   ^(CLASS ml=modifierList i=IDENT genericTypeParameterList? extendsClause? implementsClause? classTopLevelScope)
+        { $cd = new ClassDefinition(ml, $i.text); }
     |   ^(INTERFACE modifierList IDENT genericTypeParameterList? extendsClause? interfaceTopLevelScope)
     |   ^(ENUM modifierList IDENT implementsClause? enumTopLevelScope)
     |   ^(AT modifierList IDENT annotationTopLevelScope)
@@ -167,8 +175,9 @@ throwsClause
     :   ^(THROWS_CLAUSE qualifiedIdentifier+)
     ;
 
-modifierList
-    :   ^(MODIFIER_LIST modifier*)
+modifierList returns [List<String> ms]
+@init { $ms = new LinkedList<String>(); }
+    :   ^(MODIFIER_LIST (m=modifier { $ms.add($m.text); })*)
     ;
 
 modifier

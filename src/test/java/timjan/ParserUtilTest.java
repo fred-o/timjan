@@ -15,13 +15,10 @@ public class ParserUtilTest extends TestCase {
 		Tree t = ParserUtil.parse(ClassUtil.readClass(Arrays.asList(new File("src/test/java")), "test.classes",
 				"SimpleClass1"));
 		System.out.println(t.toStringTree());
-		// JavaParser.parseClass(Arrays.asList(new File("src/test/java")),
-		// "test.classes", "SimpleClass1");
 	}
 
 	public void testParseSimpleJavaFile() throws Exception {
-		ClassFile cf = ParserUtil.walk(ParserUtil.parseClass(Arrays.asList(new File("src/test/java")), "test.classes",
-				"SimpleClass1"));
+		ClassFile cf = ParserUtil.parseClass(Arrays.asList(new File("src/test/java")), "test.classes", "SimpleClass1");
 		assertNotNull(cf);
 		assertEquals("test.classes", cf.getPackageStatement().getPackageName());
 		assertEquals(3, cf.getImports().size());
@@ -37,10 +34,15 @@ public class ParserUtilTest extends TestCase {
 		assertEquals("java.util.regex.Pattern.DOTALL", i3.getIdentifier());
 		assertFalse(i3.isStar());
 		assertTrue(i3.isStatic());
-		ClassDefinition cdef = cf.getClassDefininition();
+		ClassDefinition cdef = cf.getClassDefininitions().get(0);
 		assertNotNull(cdef);
 		assertEquals("public", cdef.getVisibility());
 		assertFalse(cdef.isStatic());
 		assertEquals("SimpleClass1", cdef.getClassName());
+	}
+
+	public void testParseMyself() throws Exception {
+		ClassFile cf = ParserUtil.parseClass(Arrays.asList(new File("src/test/java")), "timjan", "ParserUtilTest");
+		assertNotNull(cf);
 	}
 }

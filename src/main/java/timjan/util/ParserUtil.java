@@ -30,13 +30,13 @@ public class ParserUtil {
 		return new CommonTokenStream(lexer);
 	}
 
-	public static Tree parseClass(List<File> classDirs, String packageName, String className) throws IOException,
+	public static ClassFile parseClass(List<File> classDirs, String packageName, String className) throws IOException,
 			RecognitionException {
-		return parse(ClassUtil.readClass(classDirs, packageName, className));
-	}
-
-	public static ClassFile walk(Tree ast) throws RecognitionException {
-		JavaWalker walker = new JavaWalker(new CommonTreeNodeStream(ast));
+		CommonTokenStream tokens = tokenize(ClassUtil.readClass(classDirs, packageName, className));
+		Tree ast = parse(tokens);
+		CommonTreeNodeStream nodes = new CommonTreeNodeStream(ast);
+		nodes.setTokenStream(tokens);
+		JavaWalker walker = new JavaWalker(nodes);
 		return walker.javaSource();
 	}
 }

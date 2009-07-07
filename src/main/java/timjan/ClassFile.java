@@ -9,25 +9,26 @@ import java.util.List;
  * @author fredrik
  */
 public class ClassFile {
-    final private PackageStatement packageStatement;
-    final private List<ImportStatement> imports;
-    final private ClassDefinition classDefininition;
+	final private PackageStatement packageStatement;
+	final private List<ImportStatement> imports;
+	final private List<ClassDefinition> classDefininitions;
 
-    public ClassFile(PackageStatement packageName, List<ImportStatement> imports, ClassDefinition classDefinition) {
-        this.packageStatement = packageName;
-        this.imports = imports != null ? Collections.unmodifiableList(imports) : Collections.<ImportStatement>emptyList();
-        this.classDefininition = classDefinition;
-    }
+	public ClassFile(PackageStatement packageName, List<ImportStatement> imports, List<ClassDefinition> classDefinitions) {
+		this.packageStatement = packageName;
+		this.imports = imports != null ? Collections.unmodifiableList(imports) : Collections
+				.<ImportStatement> emptyList();
+		this.classDefininitions = classDefinitions;
+	}
 
-    public List<ImportStatement> getImports() {
-        return imports;
-    }
+	public List<ImportStatement> getImports() {
+		return imports;
+	}
 
-    public PackageStatement getPackageStatement() {
-        return packageStatement;
-    }
+	public PackageStatement getPackageStatement() {
+		return packageStatement;
+	}
 
-    public ClassDefinition getClassDefininition() {
-        return classDefininition;
-    }
+	public List<ClassDefinition> getClassDefininitions() {
+		return classDefininitions;
+	}
 }

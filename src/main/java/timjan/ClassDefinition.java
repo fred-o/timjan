@@ -1,28 +1,35 @@
 package timjan;
 
+import java.util.List;
+
 /**
  * @author fredrik
  */
 public class ClassDefinition {
-    final private String visibility;
-    final private boolean staticClass;
-    final private String className;
+	private String visibility;
+	private boolean staticClass;
+	private String className;
 
-    public ClassDefinition(String visibility, boolean staticClass, String className) {
-        this.visibility = visibility;
-        this.staticClass = staticClass;
-        this.className = className;
-    }
+	public ClassDefinition(List<String> modifiers, String className) {
+		this.visibility = modifiers.get(0);
+		this.className = className;
+	}
 
-    public String getClassName() {
-        return className;
-    }
+	public ClassDefinition(String visibility, boolean staticClass, String className) {
+		this.visibility = visibility;
+		this.staticClass = staticClass;
+		this.className = className;
+	}
 
-    public boolean isStatic() {
-        return staticClass;
-    }
+	public String getClassName() {
+		return className;
+	}
 
-    public String getVisibility() {
-        return visibility;
-    }
+	public boolean isStatic() {
+		return staticClass;
+	}
+
+	public String getVisibility() {
+		return visibility;
+	}
 }
