@@ -1,14 +1,13 @@
 package timjan;
 
-import java.io.File;
-import java.util.Arrays;
+import java.io.*;
+import java.util.*;
 
-import junit.framework.TestCase;
+import junit.framework.*;
 
-import org.antlr.runtime.tree.Tree;
+import org.antlr.runtime.tree.*;
 
-import timjan.util.ClassUtil;
-import timjan.util.ParserUtil;
+import timjan.util.*;
 
 public class ParserUtilTest extends TestCase {
 	public void testTokenizeSource() throws Exception {
@@ -23,22 +22,25 @@ public class ParserUtilTest extends TestCase {
 		assertEquals("test.classes", cf.getPackageStatement().getPackageName());
 		assertEquals(3, cf.getImports().size());
 		ImportStatement i1 = cf.getImports().get(0);
-		assertEquals("java.util", i1.getIdentifier());
-		assertTrue(i1.isStar());
-		assertFalse(i1.isStatic());
+		assertEquals("java.util.regex.Pattern.DOTALL", i1.getIdentifier());
+		assertFalse(i1.isStar());
+		assertTrue(i1.isStatic());
 		ImportStatement i2 = cf.getImports().get(1);
-		assertEquals("java.util.regex.Pattern", i2.getIdentifier());
-		assertFalse(i2.isStar());
+		assertEquals("java.util", i2.getIdentifier());
+		assertTrue(i2.isStar());
 		assertFalse(i2.isStatic());
 		ImportStatement i3 = cf.getImports().get(2);
-		assertEquals("java.util.regex.Pattern.DOTALL", i3.getIdentifier());
-		assertFalse(i3.isStar());
-		assertTrue(i3.isStatic());
+		assertEquals("java.util.regex", i3.getIdentifier());
+		assertTrue(i3.isStar());
+		assertFalse(i3.isStatic());
 		ClassDefinition cdef = cf.getClassDefininitions().get(0);
 		assertNotNull(cdef);
-		assertEquals("public", cdef.getVisibility());
+		assertEquals(Visibility.PUBLIC, cdef.getVisibility());
 		assertFalse(cdef.isStatic());
 		assertEquals("SimpleClass1", cdef.getClassName());
+		Type ec = cdef.getExtendsClass();
+		assertNotNull(ec);
+		assertEquals("Thread", ec.getType());
 	}
 
 	public void testParseMyself() throws Exception {

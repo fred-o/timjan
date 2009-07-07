@@ -1,5 +1,6 @@
 package timjan;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,13 +12,16 @@ import java.util.List;
 public class ClassFile {
 	final private PackageStatement packageStatement;
 	final private List<ImportStatement> imports;
-	final private List<ClassDefinition> classDefininitions;
+	final private List<ClassDefinition> classDefininitions = new ArrayList<ClassDefinition>();
 
-	public ClassFile(PackageStatement packageName, List<ImportStatement> imports, List<ClassDefinition> classDefinitions) {
+	public ClassFile(PackageStatement packageName, List<ImportStatement> imports, List<Object> definitions) {
 		this.packageStatement = packageName;
 		this.imports = imports != null ? Collections.unmodifiableList(imports) : Collections
 				.<ImportStatement> emptyList();
-		this.classDefininitions = classDefinitions;
+		for (Object def : definitions) {
+			if (def instanceof ClassDefinition)
+				this.classDefininitions.add((ClassDefinition) def);
+		}
 	}
 
 	public List<ImportStatement> getImports() {

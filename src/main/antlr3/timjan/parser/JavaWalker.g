@@ -56,7 +56,7 @@ options {
 javaSource returns [ClassFile cf]
 @init { 
     List<ImportStatement> ids = new ArrayList<ImportStatement>(); 
-    List<ClassDefinition> cds = new ArrayList<ClassDefinition>();
+    List<Object> cds = new ArrayList<Object>();
 }
     :   ^(JAVA_SOURCE annotationList 
             pd=packageDeclaration? 
@@ -76,17 +76,20 @@ importDeclaration returns [ImportStatement is]
         { $is = new ImportStatement(qi, st != null, ds != null); }
     ;
     
-typeDeclaration returns [ClassDefinition cd]
-    :   ^(CLASS ml=modifierList i=IDENT genericTypeParameterList? extendsClause? implementsClause? classTopLevelScope)
-        { $cd = new ClassDefinition(ml, $i.text); }
+typeDeclaration returns [Object td]
+    :   ^(CLASS ml=modifierList i=IDENT genericTypeParameterList? ec=extendsClause? implementsClause? classTopLevelScope)
+        { $td = new ClassDefinition(ml, $i.text, ec); }
     |   ^(INTERFACE modifierList IDENT genericTypeParameterList? extendsClause? interfaceTopLevelScope)
     |   ^(ENUM modifierList IDENT implementsClause? enumTopLevelScope)
     |   ^(AT modifierList IDENT annotationTopLevelScope)
+        { }
     ;
 
-extendsClause // actually 'type' for classes and 'type+' for interfaces, but this has 
-              // been resolved by the parser grammar.
-    :   ^(EXTENDS_CLAUSE type+)
+extendsClause returns [List<Type> ts]
+@init { ts = new LinkedList<Type>(); }
+// actually 'type' for classes and 'type+' for interfaces, but this has 
+// been resolved by the parser grammar.
+    :   ^(EXTENDS_CLAUSE (t=type { $ts.add(t); })+)
     ;   
     
 implementsClause
@@ -203,16 +206,19 @@ localModifier
     |   annotation
     ;
 
-type
-    :   ^(TYPE (primitiveType | qualifiedTypeIdent) arrayDeclaratorList?)
+type returns [Type t]
+    :   ^(TYPE (pt=primitiveType | qt=qualifiedTypeIdent) arrayDeclaratorList?)
+        { $t = new Type(qt != null ? qt : $pt.text); }
     ;
 
-qualifiedTypeIdent
-    :   ^(QUALIFIED_TYPE_IDENT typeIdent+) 
+qualifiedTypeIdent returns [String s]
+    :   ^(QUALIFIED_TYPE_IDENT i=typeIdent+) 
+        { $s = i; }
     ;
 
-typeIdent
-    :   ^(IDENT genericTypeArgumentList?)
+typeIdent returns [String s]
+    :   ^(i=IDENT genericTypeArgumentList?)
+        { $s = $i.text; }
     ;
 
 primitiveType

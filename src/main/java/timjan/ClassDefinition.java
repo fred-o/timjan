@@ -1,24 +1,34 @@
 package timjan;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @author fredrik
  */
 public class ClassDefinition {
-	private String visibility;
+	private Visibility visibility;
 	private boolean staticClass;
 	private String className;
+	private Type extendsClass;
+	private List<String> annotations = new ArrayList<String>();
 
-	public ClassDefinition(List<String> modifiers, String className) {
-		this.visibility = modifiers.get(0);
+	public ClassDefinition(List<String> modifiers, String className, List<Type> extendsClasses) {
+		for (String m : modifiers) {
+			if ("static".equals(m)) {
+				staticClass = true;
+			} else if (m.startsWith("@")) {
+				annotations.add(m);
+			} else {
+				try {
+					this.visibility = Visibility.valueOf(m.toUpperCase());
+				} catch (IllegalArgumentException iae) {
+				}
+			}
+		}
 		this.className = className;
-	}
-
-	public ClassDefinition(String visibility, boolean staticClass, String className) {
-		this.visibility = visibility;
-		this.staticClass = staticClass;
-		this.className = className;
+		if (extendsClasses.size() > 0) {
+			this.extendsClass = extendsClasses.get(0);
+		}
 	}
 
 	public String getClassName() {
@@ -29,7 +39,11 @@ public class ClassDefinition {
 		return staticClass;
 	}
 
-	public String getVisibility() {
+	public Visibility getVisibility() {
 		return visibility;
+	}
+
+	public Type getExtendsClass() {
+		return extendsClass;
 	}
 }
