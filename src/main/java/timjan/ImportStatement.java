@@ -1,27 +1,32 @@
 package timjan;
 
 import java.util.List;
-import org.antlr.runtime.Token;
+
 import timjan.util.StringUtil;
 
 /**
  * @author fredrik
  */
 public class ImportStatement {
-    private String packageName;
-    private String qualifier;
+	private String identifier;
+	private boolean isStatic;
+	private boolean star;
 
-    public ImportStatement(List<Token> packageComponents, String qualifier) {
-        this.packageName = StringUtil.nullSafeJoin(packageComponents, ".");
-        this.qualifier = qualifier;
-    }
+	public ImportStatement(List<String> identifier, boolean isStatic, boolean star) {
+		this.identifier = StringUtil.nullSafeJoin(identifier, ".");
+		this.isStatic = isStatic;
+		this.star = star;
+	}
 
-    public String getPackageName() {
-        return packageName;
-    }
+	public String getIdentifier() {
+		return identifier;
+	}
 
-    public String getQualifier() {
-        return qualifier;
-    }
+	public boolean isStatic() {
+		return isStatic;
+	}
 
+	public boolean isStar() {
+		return star;
+	}
 }

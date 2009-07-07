@@ -1,25 +1,24 @@
 package timjan;
 
-import timjan.util.StringUtil;
 import java.util.List;
-import org.antlr.runtime.Token;
+
+import timjan.util.StringUtil;
 
 /**
  * @author fredrik
  */
 public class PackageStatement {
-    final private String packageName;
+	final private String packageName;
 
-    public PackageStatement(List<Token> packageComponents) {
-        this.packageName = StringUtil.nullSafeJoin(packageComponents, ".");
-    }
+	public PackageStatement(List<String> packageComponents) {
+		this.packageName = StringUtil.nullSafeJoin(packageComponents, ".");
+	}
 
-    public PackageStatement(String packageName) {
-        this.packageName = packageName;
-    }
+	public PackageStatement(String packageName) {
+		this.packageName = packageName;
+	}
 
-    public String getPackageName() {
-        return packageName;
-    }
-
+	public String getPackageName() {
+		return packageName;
+	}
 }

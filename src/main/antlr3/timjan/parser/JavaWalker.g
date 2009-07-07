@@ -47,13 +47,16 @@ options {
 @header {
     package timjan.parser;
     import timjan.*;
+    import java.util.ArrayList;
+    import java.util.LinkedList;
 }
 
 
 // Starting point for parsing a Java file.
 javaSource returns [ClassFile cf]
-    :   ^(JAVA_SOURCE annotationList pd=packageDeclaration? importDeclaration* typeDeclaration*)
-        { $cf = new ClassFile(pd, null, null); }
+@init { List<ImportStatement> ids = new ArrayList<ImportStatement>(); }
+    :   ^(JAVA_SOURCE annotationList pd=packageDeclaration? (id=importDeclaration { ids.add(id); })* typeDeclaration*)
+        { $cf = new ClassFile(pd, ids, null); }
     ;
 
 packageDeclaration returns [PackageStatement ps]
@@ -61,8 +64,9 @@ packageDeclaration returns [PackageStatement ps]
         { $ps = new PackageStatement(qi); }
     ;
     
-importDeclaration
-    :   ^(IMPORT STATIC? qualifiedIdentifier DOTSTAR?)
+importDeclaration returns [ImportStatement is]
+    :   ^(IMPORT st=STATIC? qi=qualifiedIdentifier ds=DOTSTAR?)
+        { $is = new ImportStatement(qi, st != null, ds != null); }
     ;
     
 typeDeclaration
@@ -239,9 +243,9 @@ formalParameterVarargDecl
     :   ^(FORMAL_PARAM_VARARG_DECL localModifierList type variableDeclaratorId)
     ;
     
-qualifiedIdentifier returns [String s]
-    :   IDENT { $s= $IDENT.text; }
-    |   ^(DOT qi=qualifiedIdentifier IDENT) { $s = qi + "." + $IDENT.text; }
+qualifiedIdentifier returns [List<String> s]
+    :   IDENT { $s = new LinkedList<String>(); $s.add($IDENT.text); }
+    |   ^(DOT qi=qualifiedIdentifier IDENT) { $s = qi; $s.add($IDENT.text); }
     ;
     
 // ANNOTATIONS
