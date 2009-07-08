@@ -208,18 +208,17 @@ localModifier
     ;
 
 type returns [Type t]
-    :   ^(TYPE (pt=primitiveType | qt=qualifiedTypeIdent) arrayDeclaratorList?)
-        { $t = new Type(qt != null ? qt : $pt.text); }
+    :   ^(TYPE ((pt=primitiveType { $t = new Type($pt.text, null); }) | (qt=qualifiedTypeIdent { $t = qt; })) arrayDeclaratorList?)
     ;
 
-qualifiedTypeIdent returns [String s]
+qualifiedTypeIdent returns [Type t]
     :   ^(QUALIFIED_TYPE_IDENT i=typeIdent+) 
-        { $s = i; }
+        { $t = i; }
     ;
 
-typeIdent returns [String s]
-    :   ^(i=IDENT genericTypeArgumentList?)
-        { $s = $i.text; }
+typeIdent returns [Type t]
+    :   ^(i=IDENT ta=genericTypeArgumentList?)
+        { $t = new Type($i.text, ta); }
     ;
 
 primitiveType
@@ -233,18 +232,19 @@ primitiveType
     |   DOUBLE
     ;
 
-genericTypeArgumentList
-    :   ^(GENERIC_TYPE_ARG_LIST genericTypeArgument+)
+genericTypeArgumentList returns [List<TypeArgument> tas]
+@init { $tas = new LinkedList<TypeArgument>(); }
+    :   ^(GENERIC_TYPE_ARG_LIST (ta=genericTypeArgument { $tas.add(ta); }) +)
     ;
     
-genericTypeArgument
-    :   type
+genericTypeArgument returns [TypeArgument ta]
+    :   t=type { $ta = new TypeArgument(t, null, null); }
     |   ^(QUESTION genericWildcardBoundType?)
     ;
 
-genericWildcardBoundType                                                                                                                      
-    :   ^(EXTENDS type)
-    |   ^(SUPER type)
+genericWildcardBoundType returns [TypeArgument ta]
+    :   ^(EXTENDS t=type ) { $ta = new TypeArgument(null, t, null); }|
+    |   ^(SUPER t=type) { $ta = new TypeArgument(null, null, t); }
     ;
 
 formalParameterList

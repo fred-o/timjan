@@ -1,13 +1,21 @@
 package timjan;
 
-public class Type {
-	private String type;
+import java.util.*;
 
-	public Type(String type) {
-		this.type = type;
+public class Type {
+	private String name;
+	private List<TypeArgument> typeArguments;
+
+	public Type(String name, List<TypeArgument> typeArguments) {
+		this.name = name;
+		this.typeArguments = typeArguments;
 	}
 
-	public String getType() {
-		return type;
+	public String getName() {
+	    return name;
+	}
+
+	public List<TypeArgument> getTypeArguments() {
+	    return typeArguments;
 	}
 }
