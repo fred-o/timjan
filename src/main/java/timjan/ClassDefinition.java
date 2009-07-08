@@ -10,9 +10,11 @@ public class ClassDefinition {
 	private boolean staticClass;
 	private String className;
 	private Type extendsClass;
+	private List<Type> implementsInterfaces;
 	private List<String> annotations = new ArrayList<String>();
 
-	public ClassDefinition(List<String> modifiers, String className, List<Type> extendsClasses) {
+	public ClassDefinition(List<String> modifiers, String className, List<Type> extendsClasses, 
+			List<Type> implementsInterfaces) {
 		for (String m : modifiers) {
 			if ("static".equals(m)) {
 				staticClass = true;
@@ -29,6 +31,7 @@ public class ClassDefinition {
 		if (extendsClasses.size() > 0) {
 			this.extendsClass = extendsClasses.get(0);
 		}
+		this.implementsInterfaces = implementsInterfaces;
 	}
 
 	public String getClassName() {
@@ -45,5 +48,9 @@ public class ClassDefinition {
 
 	public Type getExtendsClass() {
 		return extendsClass;
+	}
+
+	public List<Type> getImplementsInterfaces() {
+	    return implementsInterfaces;
 	}
 }

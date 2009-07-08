@@ -41,6 +41,10 @@ public class ParserUtilTest extends TestCase {
 		Type ec = cdef.getExtendsClass();
 		assertNotNull(ec);
 		assertEquals("Thread", ec.getType());
+		List<Type> ii = cdef.getImplementsInterfaces();
+		assertEquals(2, ii.size());
+		assertEquals("Runnable", ii.get(0).getType());
+		assertEquals("Comparator", ii.get(1).getType());
 	}
 
 	public void testParseMyself() throws Exception {

@@ -77,8 +77,8 @@ importDeclaration returns [ImportStatement is]
     ;
     
 typeDeclaration returns [Object td]
-    :   ^(CLASS ml=modifierList i=IDENT genericTypeParameterList? ec=extendsClause? implementsClause? classTopLevelScope)
-        { $td = new ClassDefinition(ml, $i.text, ec); }
+    :   ^(CLASS ml=modifierList i=IDENT genericTypeParameterList? ec=extendsClause? ic=implementsClause? classTopLevelScope)
+        { $td = new ClassDefinition(ml, $i.text, ec, ic); }
     |   ^(INTERFACE modifierList IDENT genericTypeParameterList? extendsClause? interfaceTopLevelScope)
     |   ^(ENUM modifierList IDENT implementsClause? enumTopLevelScope)
     |   ^(AT modifierList IDENT annotationTopLevelScope)
@@ -92,8 +92,9 @@ extendsClause returns [List<Type> ts]
     :   ^(EXTENDS_CLAUSE (t=type { $ts.add(t); })+)
     ;   
     
-implementsClause
-    :   ^(IMPLEMENTS_CLAUSE type+)
+implementsClause returns [List<Type> ts]
+@init { ts = new LinkedList<Type>(); }
+    :   ^(IMPLEMENTS_CLAUSE (t=type { $ts.add(t); })+)
     ;
         
 genericTypeParameterList
