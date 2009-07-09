@@ -47,6 +47,7 @@ options {
 @header {
     package timjan.parser;
     import timjan.syntax.*;
+    import timjan.util.*;
     import java.util.ArrayList;
     import java.util.LinkedList;
 }
@@ -179,32 +180,25 @@ throwsClause
     :   ^(THROWS_CLAUSE qualifiedIdentifier+)
     ;
 
-modifierList returns [List<String> ms]
-@init { $ms = new LinkedList<String>(); }
-    :   ^(MODIFIER_LIST (m=modifier { $ms.add($m.text); })*)
+modifierList returns [List<Modifier> ms]
+@init { $ms = new LinkedList<Modifier>(); }
+    :   ^(MODIFIER_LIST (m=modifier { $ms.add(m); })*)
     ;
 
-modifier
-    :   PUBLIC
-    |   PROTECTED
-    |   PRIVATE
-    |   STATIC
-    |   ABSTRACT
-    |   NATIVE
-    |   SYNCHRONIZED
-    |   TRANSIENT
-    |   VOLATILE
-    |   STRICTFP
-    |   localModifier
+modifier returns [Modifier mod]
+    :   m=(PUBLIC | PROTECTED | PRIVATE | STATIC | ABSTRACT | NATIVE | SYNCHRONIZED | TRANSIENT | VOLATILE | STRICTFP) 
+    { $mod = SyntaxUtil.getModifier($m.text); }
+    |   lm=localModifier { $mod = lm; }
     ;
 
-localModifierList
-    :   ^(LOCAL_MODIFIER_LIST localModifier*)
+localModifierList returns [List<Modifier> ms]
+@init { $ms = new LinkedList<Modifier>(); }
+    :   ^(LOCAL_MODIFIER_LIST (m=localModifier { $ms.add(m); })*)
     ;
 
-localModifier
+localModifier returns [Modifier mod]
     :   FINAL
-    |   annotation
+    |   a=annotation { $mod = a; }
     ;
 
 type returns [Type t]
@@ -270,8 +264,9 @@ annotationList
     :   ^(ANNOTATION_LIST annotation*)
     ;
 
-annotation
-    :   ^(AT qualifiedIdentifier annotationInit?)
+annotation returns [AnnotationStatement as]
+    :   ^(AT qi=qualifiedIdentifier annotationInit?)
+    { $as = new AnnotationStatement(qi); }
     ;
     
 annotationInit

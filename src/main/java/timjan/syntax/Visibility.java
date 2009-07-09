@@ -1,12 +1,11 @@
 package timjan.syntax;
 
-public enum Visibility {
+/**
+ * These are the visibility modifiers; see also {@link Modifiers} and
+ * {@link AnnotationStatement}.
+ *
+ * @author fredrik
+ */
+public enum Visibility implements Modifier {
 	PUBLIC, PRRIVATE, PROTECTED;
-	public static Visibility fromString(String str) {
-		try {
-			return valueOf(str.toUpperCase());
-		} catch (IllegalArgumentException iae) {
-			return null;
-		}
-	}
 }

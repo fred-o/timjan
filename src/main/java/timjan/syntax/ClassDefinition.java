@@ -11,20 +11,18 @@ public class ClassDefinition {
 	private String className;
 	private Type extendsClass;
 	private List<Type> implementsInterfaces;
-	private List<String> annotations = new ArrayList<String>();
+	private Set<Modifier> modifiers = new HashSet<Modifier>();
+	private List<AnnotationStatement> annotations = new ArrayList<AnnotationStatement>();
 
-	public ClassDefinition(List<String> modifiers, String className, List<Type> extendsClasses, 
+	public ClassDefinition(List<Modifier> modifiers, String className, List<Type> extendsClasses, 
 			List<Type> implementsInterfaces) {
-		for (String m : modifiers) {
-			if ("static".equals(m)) {
-				staticClass = true;
-			} else if (m.startsWith("@")) {
-				annotations.add(m);
+		for (Modifier m : modifiers) {
+			if (m instanceof AnnotationStatement) {
+				annotations.add((AnnotationStatement) m);
+			} else if (m instanceof Visibility) {
+				visibility = (Visibility) m;
 			} else {
-				try {
-					this.visibility = Visibility.valueOf(m.toUpperCase());
-				} catch (IllegalArgumentException iae) {
-				}
+				modifiers.add(m);
 			}
 		}
 		this.className = className;
@@ -39,7 +37,7 @@ public class ClassDefinition {
 	}
 
 	public boolean isStatic() {
-		return staticClass;
+		return modifiers.contains(Modifiers.STATIC);
 	}
 
 	public Visibility getVisibility() {
