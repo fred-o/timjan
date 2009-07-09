@@ -80,12 +80,11 @@ importDeclaration returns [ImportStatement is]
     ;
     
 typeDeclaration returns [Object td]
-    :   ^(CLASS ml=modifierList i=IDENT genericTypeParameterList? ec=extendsClause? ic=implementsClause? classTopLevelScope)
-        { $td = new ClassDefinition(ml, $i.text, ec, ic); }
+    :   ^(CLASS ml=modifierList i=IDENT genericTypeParameterList? ec=extendsClause? ic=implementsClause? tls=classTopLevelScope)
+        { $td = new ClassDefinition(ml, $i.text, ec, ic, tls); }
     |   ^(INTERFACE modifierList IDENT genericTypeParameterList? extendsClause? interfaceTopLevelScope)
     |   ^(ENUM modifierList IDENT implementsClause? enumTopLevelScope)
     |   ^(AT modifierList IDENT annotationTopLevelScope)
-        { }
     ;
 
 extendsClause returns [List<Type> ts]
@@ -121,15 +120,18 @@ enumConstant
     ;
     
     
-classTopLevelScope
-    :   ^(CLASS_TOP_LEVEL_SCOPE classScopeDeclarations*)
+classTopLevelScope returns [List<AbstractMember> ams]
+@init { $ams = new LinkedList<AbstractMember>(); }
+    :   ^(CLASS_TOP_LEVEL_SCOPE (cd=classScopeDeclarations { $ams.add(cd); })*)
     ;
     
-classScopeDeclarations
+classScopeDeclarations returns [AbstractMember am]
     :   ^(CLASS_INSTANCE_INITIALIZER block)
     |   ^(CLASS_STATIC_INITIALIZER block)
-    |   ^(FUNCTION_METHOD_DECL modifierList genericTypeParameterList? type IDENT formalParameterList arrayDeclaratorList? throwsClause? block?)
-    |   ^(VOID_METHOD_DECL modifierList genericTypeParameterList? IDENT formalParameterList throwsClause? block?)
+    |   ^(FUNCTION_METHOD_DECL ml=modifierList genericTypeParameterList? type i=IDENT formalParameterList arrayDeclaratorList? throwsClause? block?)
+    { $am = new MethodDeclaration($i.text, ml); }
+    |   ^(VOID_METHOD_DECL ml=modifierList genericTypeParameterList? i=IDENT formalParameterList throwsClause? block?)
+    { $am = new MethodDeclaration($i.text, ml); }
     |   ^(VAR_DECLARATION modifierList type variableDeclaratorList)
     |   ^(CONSTRUCTOR_DECL modifierList genericTypeParameterList? formalParameterList throwsClause? block)
     |   typeDeclaration

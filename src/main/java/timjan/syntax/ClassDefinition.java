@@ -13,9 +13,10 @@ public class ClassDefinition {
 	private List<Type> implementsInterfaces;
 	private Set<Modifier> modifiers = new HashSet<Modifier>();
 	private List<AnnotationStatement> annotations = new ArrayList<AnnotationStatement>();
+	private List<MethodDeclaration> methodDeclarations = new ArrayList<MethodDeclaration>();
 
 	public ClassDefinition(List<Modifier> modifiers, String className, List<Type> extendsClasses, 
-			List<Type> implementsInterfaces) {
+			List<Type> implementsInterfaces, List<AbstractMember> members) {
 		for (Modifier m : modifiers) {
 			if (m instanceof AnnotationStatement) {
 				annotations.add((AnnotationStatement) m);
@@ -30,6 +31,11 @@ public class ClassDefinition {
 			this.extendsClass = extendsClasses.get(0);
 		}
 		this.implementsInterfaces = implementsInterfaces;
+		for (AbstractMember member: members) {
+		    if (member instanceof MethodDeclaration) {
+			    this.methodDeclarations.add((MethodDeclaration) member);
+			}
+		}
 	}
 
 	public String getClassName() {
@@ -55,4 +61,10 @@ public class ClassDefinition {
 	public List<AnnotationStatement> getAnnotations() {
 	    return annotations;
 	}
+
+	public List<MethodDeclaration> getMethodDeclarations() {
+	    return methodDeclarations;
+	}
 }
+
+

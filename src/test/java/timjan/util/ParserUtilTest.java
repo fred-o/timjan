@@ -38,9 +38,11 @@ public class ParserUtilTest extends TestCase {
 		assertEquals(Visibility.PUBLIC, cdef.getVisibility());
 		assertFalse(cdef.isStatic());
 		assertEquals("SimpleClass1", cdef.getClassName());
+		// Extends
 		Type ec = cdef.getExtendsClass();
 		assertNotNull(ec);
 		assertEquals("Thread", ec.getName());
+		// Implements
 		List<Type> ii = cdef.getImplementsInterfaces();
 		assertEquals(2, ii.size());
 		assertEquals("Runnable", ii.get(0).getName());
@@ -50,13 +52,20 @@ public class ParserUtilTest extends TestCase {
 		TypeArgument ta1 = ii.get(1).getTypeArguments().get(0);
 		assertNotNull(ta1);
 		assertEquals("Object", ta1.getType().getName());
-
+		// Annotations
 		List<AnnotationStatement> ann = cdef.getAnnotations();
 		assertNotNull(ann);
 		assertEquals(1, ann.size());
 		AnnotationStatement as = ann.get(0);
 		assertEquals("SuppressWarnings", as.getIdentifier().get(0));
 		assertEquals("\"unused\"", as.getInitializers().get("default").getExpression());
+		// Methods
+		List<MethodDeclaration> methods = cdef.getMethodDeclarations();
+		assertNotNull(methods);
+		assertEquals(3, methods.size());
+		assertEquals("unused", methods.get(0).getName());
+		assertEquals("getList", methods.get(1).getName());
+		assertEquals("compare", methods.get(2).getName());
 	}
 
 	public void testParseMyself() throws Exception {
