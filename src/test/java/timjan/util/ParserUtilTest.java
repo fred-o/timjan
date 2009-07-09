@@ -50,6 +50,13 @@ public class ParserUtilTest extends TestCase {
 		TypeArgument ta1 = ii.get(1).getTypeArguments().get(0);
 		assertNotNull(ta1);
 		assertEquals("Object", ta1.getType().getName());
+
+		List<AnnotationStatement> ann = cdef.getAnnotations();
+		assertNotNull(ann);
+		assertEquals(1, ann.size());
+		AnnotationStatement as = ann.get(0);
+		assertEquals("SuppressWarnings", as.getIdentifier().get(0));
+		assertEquals("\"unused\"", as.getInitializers().get("default").getExpression());
 	}
 
 	public void testParseMyself() throws Exception {

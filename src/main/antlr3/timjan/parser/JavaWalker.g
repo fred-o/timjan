@@ -50,6 +50,8 @@ options {
     import timjan.util.*;
     import java.util.ArrayList;
     import java.util.LinkedList;
+    import java.util.Map;
+    import java.util.HashMap;
 }
 
 
@@ -265,27 +267,29 @@ annotationList
     ;
 
 annotation returns [AnnotationStatement as]
-    :   ^(AT qi=qualifiedIdentifier annotationInit?)
-    { $as = new AnnotationStatement(qi); }
+    :   ^(AT qi=qualifiedIdentifier ai=annotationInit?)
+    { $as = new AnnotationStatement(qi, ai); }
     ;
     
-annotationInit
-    :   ^(ANNOTATION_INIT_BLOCK annotationInitializers)
+annotationInit returns [Map<String, AnnotationInitializer> ais]
+    :   ^(ANNOTATION_INIT_BLOCK ai=annotationInitializers { $ais = ai; })
     ;
 
-annotationInitializers
-    :   ^(ANNOTATION_INIT_KEY_LIST annotationInitializer+)
-    |   ^(ANNOTATION_INIT_DEFAULT_KEY annotationElementValue)
+annotationInitializers returns [Map<String, AnnotationInitializer> ais]
+@init { $ais = new HashMap<String, AnnotationInitializer>(); }
+    :   ^(ANNOTATION_INIT_KEY_LIST (ai=annotationInitializer { $ais.put($ai.name, $ai.init); })+)
+    |   ^(ANNOTATION_INIT_DEFAULT_KEY ae=annotationElementValue { $ais.put("default", ae); })
     ;
     
-annotationInitializer
-    :   ^(IDENT annotationElementValue)
+annotationInitializer returns [String name, AnnotationInitializer init]
+    :   ^(i=IDENT ae=annotationElementValue) { $name = $i.text; $init = ae; }
     ;
     
-annotationElementValue
-    :   ^(ANNOTATION_INIT_ARRAY_ELEMENT annotationElementValue*)
-    |   annotation
-    |   expression
+annotationElementValue returns [AnnotationInitializer ai]
+@init { List<AnnotationInitializer> ais = new LinkedList<AnnotationInitializer>(); }
+    :   ^(ANNOTATION_INIT_ARRAY_ELEMENT (ae=annotationElementValue { ais.add(ae); })*) { $ai = new AnnotationInitializer(ais); }
+    |   an=annotation { $ai=new AnnotationInitializer(an); }
+    |   ex=expression { $ai=new AnnotationInitializer($ex.text); }
     ;
     
 annotationTopLevelScope

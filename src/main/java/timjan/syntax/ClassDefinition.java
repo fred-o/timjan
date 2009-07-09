@@ -51,4 +51,8 @@ public class ClassDefinition {
 	public List<Type> getImplementsInterfaces() {
 	    return implementsInterfaces;
 	}
+
+	public List<AnnotationStatement> getAnnotations() {
+	    return annotations;
+	}
 }
