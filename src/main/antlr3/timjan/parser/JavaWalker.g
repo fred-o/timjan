@@ -46,14 +46,14 @@ options {
 
 @header {
     package timjan.parser;
-    import timjan.*;
+    import timjan.syntax.*;
     import java.util.ArrayList;
     import java.util.LinkedList;
 }
 
 
 // Starting point for parsing a Java file.
-javaSource returns [ClassFile cf]
+javaSource returns [JavaSource cf]
 @init { 
     List<ImportStatement> ids = new ArrayList<ImportStatement>(); 
     List<Object> cds = new ArrayList<Object>();
@@ -63,7 +63,7 @@ javaSource returns [ClassFile cf]
             (id=importDeclaration { ids.add(id); })* 
             (cd=typeDeclaration { cds.add(cd); })*
             )
-        { $cf = new ClassFile(pd, ids, cds); }
+        { $cf = new JavaSource(pd, ids, cds); }
     ;
 
 packageDeclaration returns [PackageStatement ps]

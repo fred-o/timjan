@@ -1,19 +1,13 @@
 package timjan.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.antlr.runtime.tree.Tree;
+import org.antlr.runtime.*;
+import org.antlr.runtime.tree.*;
 
-import timjan.ClassFile;
-import timjan.parser.JavaLexer;
-import timjan.parser.JavaParser;
-import timjan.parser.JavaWalker;
+import timjan.parser.*;
+import timjan.syntax.*;
 
 public class ParserUtil {
 	public static Tree parse(String str) throws RecognitionException {
@@ -30,7 +24,7 @@ public class ParserUtil {
 		return new CommonTokenStream(lexer);
 	}
 
-	public static ClassFile parseClass(List<File> classDirs, String packageName, String className) throws IOException,
+	public static JavaSource parseClass(List<File> classDirs, String packageName, String className) throws IOException,
 			RecognitionException {
 		CommonTokenStream tokens = tokenize(ClassUtil.readClass(classDirs, packageName, className));
 		Tree ast = parse(tokens);

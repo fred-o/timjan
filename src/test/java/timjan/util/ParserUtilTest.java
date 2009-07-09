@@ -1,4 +1,4 @@
-package timjan;
+package timjan.util;
 
 import java.io.*;
 import java.util.*;
@@ -7,7 +7,7 @@ import junit.framework.*;
 
 import org.antlr.runtime.tree.*;
 
-import timjan.util.*;
+import timjan.syntax.*;
 
 public class ParserUtilTest extends TestCase {
 	public void testTokenizeSource() throws Exception {
@@ -17,7 +17,7 @@ public class ParserUtilTest extends TestCase {
 	}
 
 	public void testParseSimpleJavaFile() throws Exception {
-		ClassFile cf = ParserUtil.parseClass(Arrays.asList(new File("src/test/java")), "test.classes", "SimpleClass1");
+		JavaSource cf = ParserUtil.parseClass(Arrays.asList(new File("src/test/java")), "test.classes", "SimpleClass1");
 		assertNotNull(cf);
 		assertEquals("test.classes", cf.getPackageStatement().getPackageName());
 		assertEquals(3, cf.getImports().size());
@@ -53,7 +53,8 @@ public class ParserUtilTest extends TestCase {
 	}
 
 	public void testParseMyself() throws Exception {
-		ClassFile cf = ParserUtil.parseClass(Arrays.asList(new File("src/test/java")), "timjan", "ParserUtilTest");
+		JavaSource cf = ParserUtil.parseClass(Arrays.asList(new File("src/test/java")), "timjan.util",
+				"ParserUtilTest");
 		assertNotNull(cf);
 	}
 }

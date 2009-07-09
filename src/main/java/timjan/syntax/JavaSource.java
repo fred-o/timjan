@@ -1,4 +1,4 @@
-package timjan;
+package timjan.syntax;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,12 +9,12 @@ import java.util.List;
  * 
  * @author fredrik
  */
-public class ClassFile {
+public class JavaSource {
 	final private PackageStatement packageStatement;
 	final private List<ImportStatement> imports;
 	final private List<ClassDefinition> classDefininitions = new ArrayList<ClassDefinition>();
 
-	public ClassFile(PackageStatement packageName, List<ImportStatement> imports, List<Object> definitions) {
+	public JavaSource(PackageStatement packageName, List<ImportStatement> imports, List<Object> definitions) {
 		this.packageStatement = packageName;
 		this.imports = imports != null ? Collections.unmodifiableList(imports) : Collections
 				.<ImportStatement> emptyList();

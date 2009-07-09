@@ -1,4 +1,4 @@
-package timjan;
+package timjan.syntax;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package timjan;
+package timjan.util;
 
 import java.io.File;
 import java.util.Arrays;

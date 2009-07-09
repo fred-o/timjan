@@ -1,4 +1,4 @@
-package timjan;
+package timjan.syntax;
 
 public enum Visibility {
 	PUBLIC, PRRIVATE, PROTECTED;
