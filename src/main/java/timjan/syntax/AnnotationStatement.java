@@ -4,15 +4,15 @@ import java.util.*;
 
 public class AnnotationStatement implements Modifier {
     
-	private List<String> identifier;
+	private QualifiedIdentifier identifier;
 	private Map<String, AnnotationInitializer> initializers;
 
-	public AnnotationStatement(List<String> identifier, Map<String, AnnotationInitializer> initializers) {
+	public AnnotationStatement(QualifiedIdentifier identifier, Map<String, AnnotationInitializer> initializers) {
 		this.identifier = identifier;
 		this.initializers = initializers;
 	}
 
-	public List<String> getIdentifier() {
+	public QualifiedIdentifier getIdentifier() {
 	    return identifier;
 	}
 

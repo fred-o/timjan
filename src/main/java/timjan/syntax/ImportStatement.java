@@ -8,17 +8,17 @@ import timjan.util.StringUtil;
  * @author fredrik
  */
 public class ImportStatement {
-	private String identifier;
+	private QualifiedIdentifier identifier;
 	private boolean isStatic;
 	private boolean star;
 
-	public ImportStatement(List<String> identifier, boolean isStatic, boolean star) {
-		this.identifier = StringUtil.nullSafeJoin(identifier, ".");
+	public ImportStatement(QualifiedIdentifier identifier, boolean isStatic, boolean star) {
+		this.identifier = identifier;
 		this.isStatic = isStatic;
 		this.star = star;
 	}
 
-	public String getIdentifier() {
+	public QualifiedIdentifier getIdentifier() {
 		return identifier;
 	}
 

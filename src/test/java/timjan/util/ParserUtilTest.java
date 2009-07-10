@@ -22,15 +22,15 @@ public class ParserUtilTest extends TestCase {
 		assertEquals("test.classes", cf.getPackageStatement().getPackageName());
 		assertEquals(3, cf.getImports().size());
 		ImportStatement i1 = cf.getImports().get(0);
-		assertEquals("java.util.regex.Pattern.DOTALL", i1.getIdentifier());
+		assertEquals("java.util.regex.Pattern.DOTALL", i1.getIdentifier().toString());
 		assertFalse(i1.isStar());
 		assertTrue(i1.isStatic());
 		ImportStatement i2 = cf.getImports().get(1);
-		assertEquals("java.util", i2.getIdentifier());
+		assertEquals("java.util", i2.getIdentifier().toString());
 		assertTrue(i2.isStar());
 		assertFalse(i2.isStatic());
 		ImportStatement i3 = cf.getImports().get(2);
-		assertEquals("java.util.regex", i3.getIdentifier());
+		assertEquals("java.util.regex", i3.getIdentifier().toString());
 		assertTrue(i3.isStar());
 		assertFalse(i3.isStatic());
 		ClassDefinition cdef = cf.getClassDefininitions().get(0);
@@ -57,7 +57,7 @@ public class ParserUtilTest extends TestCase {
 		assertNotNull(ann);
 		assertEquals(1, ann.size());
 		AnnotationStatement as = ann.get(0);
-		assertEquals("SuppressWarnings", as.getIdentifier().get(0));
+		assertEquals("SuppressWarnings", as.getIdentifier().toString());
 		assertEquals("\"unused\"", as.getInitializers().get("default").getExpression());
 		// Methods
 		List<MethodDeclaration> methods = cdef.getMethodDeclarations();

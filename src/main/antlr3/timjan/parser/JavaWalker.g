@@ -257,9 +257,13 @@ formalParameterVarargDecl
     :   ^(FORMAL_PARAM_VARARG_DECL localModifierList type variableDeclaratorId)
     ;
     
-qualifiedIdentifier returns [List<String> s]
+qualifiedIdentifier returns [QualifiedIdentifier qi]
+    : s=qualifiedIdentifierParts { $qi = new QualifiedIdentifier(s); }
+    ;
+
+qualifiedIdentifierParts returns [List<String> s]
     :   IDENT { $s = new LinkedList<String>(); $s.add($IDENT.text); }
-    |   ^(DOT qi=qualifiedIdentifier IDENT) { $s = qi; $s.add($IDENT.text); }
+    |   ^(DOT qi=qualifiedIdentifierParts IDENT) { $s = qi; $s.add($IDENT.text); }
     ;
     
 // ANNOTATIONS

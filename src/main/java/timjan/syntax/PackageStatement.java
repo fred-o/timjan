@@ -8,17 +8,13 @@ import timjan.util.StringUtil;
  * @author fredrik
  */
 public class PackageStatement {
-	final private String packageName;
+	private QualifiedIdentifier identifier;
 
-	public PackageStatement(List<String> packageComponents) {
-		this.packageName = StringUtil.nullSafeJoin(packageComponents, ".");
-	}
-
-	public PackageStatement(String packageName) {
-		this.packageName = packageName;
+	public PackageStatement(QualifiedIdentifier identifier) {
+		this.identifier = identifier;
 	}
 
 	public String getPackageName() {
-		return packageName;
+		return identifier.toString();
 	}
 }
