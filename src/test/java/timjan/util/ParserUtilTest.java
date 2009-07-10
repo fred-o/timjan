@@ -67,9 +67,12 @@ public class ParserUtilTest extends TestCase {
 		assertNull(methods.get(0).getReturnType());
 		assertEquals("getList", methods.get(1).getName());
 		assertEquals("IllegalArgumentException", methods.get(1).getThrows().get(0).toString());
-		Type rt = methods.get(1).getReturnType();
-
+		ClassReference rt = (ClassReference) methods.get(1).getReturnType();
+		assertEquals("List", rt.getName());
+		assertEquals("String", rt.getTypeArguments().get(0).getType().getName());
+		assertEquals(PrimitiveTypes.INT, methods.get(2).getReturnType());
 		assertEquals("compare", methods.get(2).getName());
+		
 	}
 
 	public void testParseMyself() throws Exception {
