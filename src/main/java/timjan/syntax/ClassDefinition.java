@@ -9,14 +9,14 @@ public class ClassDefinition {
 	private Visibility visibility;
 	private boolean staticClass;
 	private String className;
-	private Type extendsClass;
-	private List<Type> implementsInterfaces;
+	private ClassReference extendsClass;
+	private List<ClassReference> implementsInterfaces;
 	private Set<Modifier> modifiers = new HashSet<Modifier>();
 	private List<AnnotationStatement> annotations = new ArrayList<AnnotationStatement>();
 	private List<MethodDeclaration> methodDeclarations = new ArrayList<MethodDeclaration>();
 
-	public ClassDefinition(List<Modifier> modifiers, String className, List<Type> extendsClasses, 
-			List<Type> implementsInterfaces, List<AbstractMember> members) {
+	public ClassDefinition(List<Modifier> modifiers, String className, List<ClassReference> extendsClasses, 
+			List<ClassReference> implementsInterfaces, List<AbstractMember> members) {
 		for (Modifier m : modifiers) {
 			if (m instanceof AnnotationStatement) {
 				annotations.add((AnnotationStatement) m);
@@ -50,11 +50,11 @@ public class ClassDefinition {
 		return visibility;
 	}
 
-	public Type getExtendsClass() {
+	public ClassReference getExtendsClass() {
 		return extendsClass;
 	}
 
-	public List<Type> getImplementsInterfaces() {
+	public List<ClassReference> getImplementsInterfaces() {
 	    return implementsInterfaces;
 	}
 

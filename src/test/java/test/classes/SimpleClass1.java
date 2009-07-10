@@ -13,7 +13,7 @@ public class SimpleClass1 extends Thread implements Runnable, Comparator<Object>
 	private void unused() {
 	}
 
-	public static List<String> getList() {
+	public static List<String> getList() throws IllegalArgumentException {
 		return null;
 	}
 

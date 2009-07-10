@@ -43,7 +43,7 @@ public class ParserUtilTest extends TestCase {
 		assertNotNull(ec);
 		assertEquals("Thread", ec.getName());
 		// Implements
-		List<Type> ii = cdef.getImplementsInterfaces();
+		List<ClassReference> ii = cdef.getImplementsInterfaces();
 		assertEquals(2, ii.size());
 		assertEquals("Runnable", ii.get(0).getName());
 		assertNull(ii.get(0).getTypeArguments());
@@ -64,7 +64,11 @@ public class ParserUtilTest extends TestCase {
 		assertNotNull(methods);
 		assertEquals(3, methods.size());
 		assertEquals("unused", methods.get(0).getName());
+		assertNull(methods.get(0).getReturnType());
 		assertEquals("getList", methods.get(1).getName());
+		assertEquals("IllegalArgumentException", methods.get(1).getThrows().get(0).toString());
+		Type rt = methods.get(1).getReturnType();
+
 		assertEquals("compare", methods.get(2).getName());
 	}
 

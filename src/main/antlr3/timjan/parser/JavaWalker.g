@@ -87,16 +87,16 @@ typeDeclaration returns [Object td]
     |   ^(AT modifierList IDENT annotationTopLevelScope)
     ;
 
-extendsClause returns [List<Type> ts]
-@init { ts = new LinkedList<Type>(); }
+extendsClause returns [List<ClassReference> ts]
+@init { ts = new LinkedList<ClassReference>(); }
 // actually 'type' for classes and 'type+' for interfaces, but this has 
 // been resolved by the parser grammar.
-    :   ^(EXTENDS_CLAUSE (t=type { $ts.add(t); })+)
+    :   ^(EXTENDS_CLAUSE (t=type { $ts.add((ClassReference)t); })+)
     ;   
     
-implementsClause returns [List<Type> ts]
-@init { ts = new LinkedList<Type>(); }
-    :   ^(IMPLEMENTS_CLAUSE (t=type { $ts.add(t); })+)
+implementsClause returns [List<ClassReference> ts]
+@init { ts = new LinkedList<ClassReference>(); }
+    :   ^(IMPLEMENTS_CLAUSE (t=type { $ts.add((ClassReference)t); })+)
     ;
         
 genericTypeParameterList
@@ -128,10 +128,10 @@ classTopLevelScope returns [List<AbstractMember> ams]
 classScopeDeclarations returns [AbstractMember am]
     :   ^(CLASS_INSTANCE_INITIALIZER block)
     |   ^(CLASS_STATIC_INITIALIZER block)
-    |   ^(FUNCTION_METHOD_DECL ml=modifierList genericTypeParameterList? type i=IDENT formalParameterList arrayDeclaratorList? throwsClause? block?)
-    { $am = new MethodDeclaration($i.text, ml); }
-    |   ^(VOID_METHOD_DECL ml=modifierList genericTypeParameterList? i=IDENT formalParameterList throwsClause? block?)
-    { $am = new MethodDeclaration($i.text, ml); }
+    |   ^(FUNCTION_METHOD_DECL ml=modifierList genericTypeParameterList? rt=type i=IDENT formalParameterList arrayDeclaratorList? tc=throwsClause? block?)
+    { $am = new MethodDeclaration(ml, rt, $i.text, tc); }
+    |   ^(VOID_METHOD_DECL ml=modifierList genericTypeParameterList? i=IDENT formalParameterList tc=throwsClause? block?)
+    { $am = new MethodDeclaration(ml, null, $i.text, tc); }
     |   ^(VAR_DECLARATION modifierList type variableDeclaratorList)
     |   ^(CONSTRUCTOR_DECL modifierList genericTypeParameterList? formalParameterList throwsClause? block)
     |   typeDeclaration
@@ -180,8 +180,9 @@ arrayInitializer
     :   ^(ARRAY_INITIALIZER variableInitializer*)
     ;
 
-throwsClause
-    :   ^(THROWS_CLAUSE qualifiedIdentifier+)
+throwsClause returns [List<QualifiedIdentifier> qis]
+@init { $qis = new LinkedList<QualifiedIdentifier>(); }
+    :   ^(THROWS_CLAUSE (qi=qualifiedIdentifier { $qis.add(qi); })+)
     ;
 
 modifierList returns [List<Modifier> ms]
@@ -206,7 +207,7 @@ localModifier returns [Modifier mod]
     ;
 
 type returns [Type t]
-    :   ^(TYPE ((pt=primitiveType { $t = new Type($pt.text, null); }) | (qt=qualifiedTypeIdent { $t = qt; })) arrayDeclaratorList?)
+    :   ^(TYPE ((pt=primitiveType { $t = PrimitiveTypes.valueOf($pt.text.toUpperCase()); }) | (qt=qualifiedTypeIdent { $t = qt; })) arrayDeclaratorList?)
     ;
 
 qualifiedTypeIdent returns [Type t]
@@ -216,7 +217,7 @@ qualifiedTypeIdent returns [Type t]
 
 typeIdent returns [Type t]
     :   ^(i=IDENT ta=genericTypeArgumentList?)
-        { $t = new Type($i.text, ta); }
+        { $t = new ClassReference($i.text, ta); }
     ;
 
 primitiveType
