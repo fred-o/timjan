@@ -128,10 +128,10 @@ classTopLevelScope returns [List<AbstractMember> ams]
 classScopeDeclarations returns [AbstractMember am]
     :   ^(CLASS_INSTANCE_INITIALIZER block)
     |   ^(CLASS_STATIC_INITIALIZER block)
-    |   ^(FUNCTION_METHOD_DECL ml=modifierList genericTypeParameterList? rt=type i=IDENT formalParameterList arrayDeclaratorList? tc=throwsClause? block?)
-    { $am = new MethodDeclaration(ml, rt, $i.text, tc); }
-    |   ^(VOID_METHOD_DECL ml=modifierList genericTypeParameterList? i=IDENT formalParameterList tc=throwsClause? block?)
-    { $am = new MethodDeclaration(ml, null, $i.text, tc); }
+    |   ^(FUNCTION_METHOD_DECL ml=modifierList genericTypeParameterList? rt=type i=IDENT pl=formalParameterList arrayDeclaratorList? tc=throwsClause? block?)
+        { $am = new MethodDeclaration(ml, rt, $i.text, pl, tc); }
+    |   ^(VOID_METHOD_DECL ml=modifierList genericTypeParameterList? i=IDENT pl=formalParameterList tc=throwsClause? block?)
+        { $am = new MethodDeclaration(ml, null, $i.text, pl, tc); }
     |   ^(VAR_DECLARATION modifierList type variableDeclaratorList)
     |   ^(CONSTRUCTOR_DECL modifierList genericTypeParameterList? formalParameterList throwsClause? block)
     |   typeDeclaration
@@ -159,8 +159,8 @@ variableDeclarator
     :   ^(VAR_DECLARATOR variableDeclaratorId variableInitializer?)
     ;
     
-variableDeclaratorId
-    :   ^(IDENT arrayDeclaratorList?)
+variableDeclaratorId returns [String s]
+    :   ^(IDENT arrayDeclaratorList?) { $s = $IDENT.text; }
     ;
 
 variableInitializer
@@ -246,16 +246,17 @@ genericWildcardBoundType returns [TypeArgument ta]
     |   ^(SUPER t=type) { $ta = new TypeArgument(null, null, t); }
     ;
 
-formalParameterList
-    :   ^(FORMAL_PARAM_LIST formalParameterStandardDecl* formalParameterVarargDecl?) 
+formalParameterList returns [List<MethodArgument> args] 
+@init { $args = new LinkedList<MethodArgument>(); }
+    :   ^(FORMAL_PARAM_LIST (sd=formalParameterStandardDecl { $args.add(sd); })* (va=formalParameterVarargDecl { $args.add(va); })?) 
     ;
     
-formalParameterStandardDecl
-    :   ^(FORMAL_PARAM_STD_DECL localModifierList type variableDeclaratorId)
+formalParameterStandardDecl returns [MethodArgument arg]
+    :   ^(FORMAL_PARAM_STD_DECL ml=localModifierList t=type i=variableDeclaratorId) { $arg = new MethodArgument(i, t, ml, false); }
     ;
     
-formalParameterVarargDecl
-    :   ^(FORMAL_PARAM_VARARG_DECL localModifierList type variableDeclaratorId)
+formalParameterVarargDecl returns [MethodArgument arg]
+    :   ^(FORMAL_PARAM_VARARG_DECL ml=localModifierList t=type i=variableDeclaratorId) { $arg = new MethodArgument(i, t, ml, true); }
     ;
     
 qualifiedIdentifier returns [QualifiedIdentifier qi]

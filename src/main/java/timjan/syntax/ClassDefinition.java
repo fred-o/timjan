@@ -7,7 +7,6 @@ import java.util.*;
  */
 public class ClassDefinition {
 	private Visibility visibility;
-	private boolean staticClass;
 	private String className;
 	private ClassReference extendsClass;
 	private List<ClassReference> implementsInterfaces;

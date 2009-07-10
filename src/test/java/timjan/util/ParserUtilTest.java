@@ -72,7 +72,13 @@ public class ParserUtilTest extends TestCase {
 		assertEquals("String", rt.getTypeArguments().get(0).getType().getName());
 		assertEquals(PrimitiveTypes.INT, methods.get(2).getReturnType());
 		assertEquals("compare", methods.get(2).getName());
-		
+		// Method arguments
+		List<MethodArgument> args = methods.get(2).getArguments();
+		assertEquals(2, args.size());
+		assertEquals("o1", args.get(0).getName());
+		assertEquals("Object", args.get(0).getType().getName());
+		assertEquals("o2", args.get(1).getName());
+		assertEquals("Object", args.get(1).getType().getName());
 	}
 
 	public void testParseMyself() throws Exception {
