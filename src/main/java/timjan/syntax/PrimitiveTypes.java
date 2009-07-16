@@ -13,4 +13,8 @@ public enum PrimitiveTypes implements Type {
 	public String getName() {
 	    return name;
 	}
+
+	public String getClassName() {
+	    return name;
+	}
 }

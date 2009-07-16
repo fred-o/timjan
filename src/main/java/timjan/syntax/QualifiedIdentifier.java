@@ -16,6 +16,10 @@ public class QualifiedIdentifier {
 	    return parts;
 	}
 
+	public String getLastPart() {
+		return parts.get(parts.size() -1);
+	}
+
 	@Override
 	public String toString() {
 		return text;
