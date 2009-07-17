@@ -23,7 +23,7 @@ public class ParserUtil {
 		JavaLexer lexer = new JavaLexer(new ANTLRStringStream(str));
 		return new CommonTokenStream(lexer);
 	}
-
+	
 	public static JavaSource parseClass(List<File> classDirs, String packageName, String className) throws IOException,
 			RecognitionException {
 		CommonTokenStream tokens = tokenize(ClassUtil.readClass(classDirs, packageName, className));
